@@ -14,15 +14,21 @@ export interface PlayPageCanvasStartGameProps {
   actions?: {
     "start-1"?: () => void;
   };
-
+  /** STATE_APPLICATION_STATE /message bound to the "Game status" observable. */
+  statusMessage?: string;
+  /** STATE_HIGH_SCORE bound to the "Current high score" observable. */
+  highScore?: number | null;
 }
 
 export type PlayPageCanvasStartGameActionCallbacks = NonNullable<PlayPageCanvasStartGameProps["actions"]>;
 
-export function PlayPageCanvasStartGame({ actions }: PlayPageCanvasStartGameProps) {
+export function PlayPageCanvasStartGame({ actions, statusMessage, highScore }: PlayPageCanvasStartGameProps) {
+  const route = typeof window !== "undefined" ? window.location.pathname : "/play";
+  const statusText = statusMessage && statusMessage.length > 0 ? statusMessage : "Ready";
+  const highScoreText = highScore === null || highScore === undefined ? "" : String(highScore);
   return (
     <>
-      <div data-surface-id="SURF_PLAY_PAGE" className="flex-1 flex flex-col min-h-screen" data-setfarm-element-ref="E000001" data-observable-refs="OBS_START_GAME_PLAY_ROUTE_RETAINED">
+        <div data-surface-id="SURF_PLAY_PAGE" data-route={route} className="flex-1 flex flex-col min-h-screen" data-setfarm-element-ref="E000001" data-observable-refs="OBS_START_GAME_PLAY_ROUTE_RETAINED">
           {/* Top Header Bar (decorative, no undeclared controls) */}
           <header className="border-b border-slate-800 bg-slate-900/60 backdrop-blur px-8 py-4 flex items-center justify-between">
             <div className="flex items-center space-x-3">
@@ -40,16 +46,15 @@ export function PlayPageCanvasStartGame({ actions }: PlayPageCanvasStartGameProp
               <div className="flex items-center space-x-2">
                 <span className="text-xs uppercase tracking-wider font-semibold text-slate-400">Status:</span>
                 {/* Accessible role="status" named "Game status" */}
-                <div className="inline-flex items-center text-sm font-medium text-emerald-400 bg-emerald-950/60 border border-emerald-800/60 px-3 py-1 rounded-full" data-setfarm-element-ref="E000002" role="status" aria-label="Game status" data-observable-refs="OBS_START_GAME_GAME_STARTED_MESSAGE">
-                  <span className="w-2 h-2 rounded-full bg-emerald-400 mr-2 animate-pulse"></span>
-                  Ready
+                <div className="inline-flex items-center text-sm font-medium text-emerald-400 bg-emerald-950/60 border border-emerald-800/60 px-3 py-1 rounded-full" data-setfarm-element-ref="E000002" role="status" aria-label="Game status" data-observable-refs="OBS_START_GAME_GAME_STARTED_MESSAGE" data-value={statusText}>
+                  <span className="w-2 h-2 rounded-full bg-emerald-400 mr-2 animate-pulse"></span>{statusText}
                 </div>
               </div>
       
               <div className="flex items-center space-x-2">
                 <span className="text-xs uppercase tracking-wider font-semibold text-slate-400">High Score:</span>
                 {/* Accessible role="status" named "Current high score". Initially empty string before action */}
-                <div className="inline-flex items-center justify-center min-w-[2.5rem] h-8 text-sm font-mono font-bold text-indigo-300 bg-slate-800/80 border border-slate-700 px-3 rounded-lg" data-setfarm-element-ref="E000003" role="status" aria-label="Current high score" data-observable-refs="OBS_START_GAME_PERSISTED_HIGH_SCORE_VALUE"></div>
+                <div className="inline-flex items-center justify-center min-w-[2.5rem] h-8 text-sm font-mono font-bold text-indigo-300 bg-slate-800/80 border border-slate-700 px-3 rounded-lg" data-setfarm-element-ref="E000003" role="status" aria-label="Current high score" data-observable-refs="OBS_START_GAME_PERSISTED_HIGH_SCORE_VALUE" data-value={highScoreText}>{highScoreText}</div>
               </div>
             </div>
           </header>
